@@ -1,0 +1,118 @@
+---
+sidebar: sidebar 
+permalink: trident-concepts/ontap-drivers.html 
+keywords: trident backend, AFF, FAS, ONTAP Select, Cloud, Amazon FSx for NetApp ONTAP, drivers, ONTAP drivers 
+summary: Trident 環境で Element バックエンドを作成して使用する方法について説明します。 
+---
+= ONTAP ドライバ
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Astra Trident は、 ONTAP クラスタとの通信に使用する 5 つの ONTAP ストレージドライバを提供します。各ドライバーがボリュームの作成、アクセス制御、機能をどのように処理するかについて、詳細をご覧ください。
+
+
+
+== ONTAP ストレージドライバについて説明します
+
+[WARNING]
+====
+Astra Controlは、で作成したボリュームに対して、シームレスな保護、ディザスタリカバリ、および移動（Kubernetesクラスタ間でボリュームを移動）を提供します `ontap-nas`、 `ontap-nas-flexgroup`および `ontap-san` ドライバ。を参照してください link:https://docs.netapp.com/us-en/astra-control-center/use/replicate_snapmirror.html#replication-prerequisites["Astra Controlレプリケーションの前提条件"^] を参照してください。
+
+* を使用する必要があります `ontap-nas` データ保護、ディザスタリカバリ、モビリティを必要とする本番環境のワークロード向けのサービスです。
+* 使用 `ontap-san-economy` 想定されるボリューム使用量がONTAP でサポートされる量よりも大幅に多い場合
+* 使用 `ontap-nas-economy` 想定されるボリューム使用量が、ONTAP でサポートされるおよびよりも大幅に多い場合にのみ該当します `ontap-san-economy` ドライバは使用できません。
+* 使用しないでください `ontap-nas-economy` データ保護、ディザスタリカバリ、モビリティのニーズが予想される場合。
+
+
+====
+[cols="5"]
+|===
+| ドライバ | プロトコル | ボリュームモード | サポートされているアクセスモード | サポートされるファイルシステム 
+
+
+| `ontap-nas`  a| 
+NFS
+ a| 
+ファイルシステム
+ a| 
+RWO 、 ROX 、 RWX
+ a| 
+"" 、 NFS です
+
+
+
+| `ontap-nas-economy`  a| 
+NFS
+ a| 
+ファイルシステム
+ a| 
+RWO 、 ROX 、 RWX
+ a| 
+"" 、 NFS です
+
+
+
+| `ontap-nas-flexgroup`  a| 
+NFS
+ a| 
+ファイルシステム
+ a| 
+RWO 、 ROX 、 RWX
+ a| 
+"" 、 NFS です
+
+
+
+| `ontap-san`  a| 
+iSCSI
+ a| 
+ブロック
+ a| 
+RWO 、 ROX 、 RWX
+ a| 
+ファイルシステムなし。rawブロックデバイスです
+
+
+
+| `ontap-san`  a| 
+iSCSI
+ a| 
+ファイルシステム
+ a| 
+RWO 、 ROX
+
+rwxはファイルシステムボリュームモードでは使用できません。
+ a| 
+`xfs`、 `ext3`、 `ext4`
+
+
+
+| `ontap-san-economy`  a| 
+iSCSI
+ a| 
+ブロック
+ a| 
+RWO 、 ROX 、 RWX
+ a| 
+ファイルシステムなし。rawブロックデバイスです
+
+
+
+| `ontap-san-economy`  a| 
+iSCSI
+ a| 
+ファイルシステム
+ a| 
+RWO 、 ROX
+
+rwxはファイルシステムボリュームモードでは使用できません。
+ a| 
+`xfs`、 `ext3`、 `ext4`
+
+|===
+
+NOTE: ONTAP バックエンドは、セキュリティロール（ユーザ名とパスワード）のログインクレデンシャル、またはONTAP クラスタにインストールされている秘密鍵と証明書を使用して認証できます。を使用して既存のバックエンドを更新し、認証モードを移行することができます `tridentctl update backend`。

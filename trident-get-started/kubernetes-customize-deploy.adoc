@@ -1,0 +1,174 @@
+---
+sidebar: sidebar 
+permalink: trident-get-started/kubernetes-customize-deploy.html 
+keywords: deploy, trident, methods, operator, tridentctl, helm, attributes, customize, tridentorchestrator, smb, windows 
+summary: 'Tridentオペレータは、の属性を使用して、Astra Tridentのインストール方法をカスタマイズできます `TridentOrchestrator` 仕様' 
+---
+= Tridentオペレータのインストールをカスタマイズ
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+[role="lead"]
+Tridentオペレータは、の属性を使用してAstra Tridentのインストールをカスタマイズできます `TridentOrchestrator` 仕様インストールをカスタマイズする場合は、それ以上のカスタマイズが必要です `TridentOrchestrator` 引数allow、使用を検討してください `tridentctl` 必要に応じて変更するカスタムYAMLマニフェストを生成します。
+
+
+
+== コントローラポッドとノードポッドについて
+
+Astra Tridentは、単一のコントローラポッドと、クラスタ内の各ワーカーノード上のノードポッドとして実行されます。Astra Tridentボリュームをマウントするすべてのホストでノードポッドが実行されている必要があります。
+
+Kubernetes link:https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/["ノードセレクタ"^] および link:https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/["寛容さと汚れ"^] は、特定のノードまたは優先ノードで実行されるようにポッドを制限するために使用されます。「ControllerPlugin」およびを使用します `NodePlugin`を使用すると、拘束とオーバーライドを指定できます。
+
+* コントローラプラグインは、Snapshotやサイズ変更などのボリュームのプロビジョニングと管理を処理します。
+* ノードプラグインによって、ノードへのストレージの接続が処理されます。
+
+
+
+
+== 設定オプション
+
+
+WARNING: `spec.namespace` は、で指定します `TridentOrchestrator` Astra Tridentがインストールされているネームスペースを指定します。このパラメータ * は、 Astra Trident のインストール後に更新できません * 。これを実行すると、が実行されます `TridentOrchestrator` ステータスをに変更します `Failed`。Astra Tridentは、ネームスペース間での移行を意図していません。
+
+このテーブルの詳細 `TridentOrchestrator` 属性。
+
+[cols="3"]
+|===
+| パラメータ | 説明 | デフォルト 
+
+
+| `namespace` | Astra Trident をインストールするネームスペース | デフォルト 
+
+
+| `debug` | Astra Trident のデバッグを有効にします | いいえ 
+
+
+| `windows` | をに設定します `true` Windowsワーカーノードへのインストールを有効にします。 | いいえ 
+
+
+| `IPv6` | IPv6 経由の Astra Trident をインストール | いいえ 
+
+
+| `k8sTimeout` | Kubernetes 処理のタイムアウト | 30 秒 
+
+
+| `silenceAutosupport` | AutoSupport バンドルをネットアップに自動的に送信しない | いいえ 
+
+
+| `enableNodePrep` | ワーカーノードの依存関係を自動的に管理（ * beta * ） | いいえ 
+
+
+| `autosupportImage` | AutoSupport テレメトリのコンテナイメージ | "netapp/trident-autosupport：23.01" 
+
+
+| `autosupportProxy` | AutoSupport テレメトリを送信するプロキシのアドレス / ポート | "http://proxy.example.com:8888"[] 
+
+
+| `uninstall` | Astra Trident のアンインストールに使用するフラグ | いいえ 
+
+
+| `logFormat` | Astra Trident のログ形式が使用 [text 、 JSON] | テキスト（ Text ） 
+
+
+| `tridentImage` | インストールする Astra Trident イメージ | 「 NetApp / Trident ： 21.04 」 
+
+
+| `imageRegistry` | 形式の内部レジストリへのパス
+`<registry FQDN>[:port][/subpath]` | "k83.gcr.io/sig-storage (k8s 1.19+)またはQua.io/k8scsi" 
+
+
+| `kubeletDir` | ホスト上の kubelet ディレクトリへのパス | 「 /var/lib/kubelet 」 
+
+
+| `wipeout` | Astra Trident を完全に削除するために削除するリソースのリスト |  
+
+
+| `imagePullSecrets` | 内部レジストリからイメージをプルするシークレット |  
+
+
+| `imagePullPolicy` | Tridentオペレータのイメージプルポリシーを設定します。有効な値は次のとおりです。
+`Always` 常にイメージをプルする。
+`IfNotPresent` ノード上にイメージが存在しない場合にのみ取得します。
+`Never` 画像を絶対に引き出さないでください。 | `IfNotPresent` 
+
+
+| `controllerPluginNodeSelector` | ポッド用の追加のノードセレクタ。pod.spec.nodeSelector と同じ形式を使用します。 | デフォルトはありません。オプションです 
+
+
+| `controllerPluginTolerations` | ポッドに対するKubernetesの許容範囲を上書きします。POD .spec.Toleratations と同じ形式を使用します。 | デフォルトはありません。オプションです 
+
+
+| `nodePluginNodeSelector` | ポッド用の追加のノードセレクタ。pod.spec.nodeSelector と同じ形式を使用します。 | デフォルトはありません。オプションです 
+
+
+| `nodePluginTolerations` | ポッドに対するKubernetesの許容範囲を上書きします。POD .spec.Toleratations と同じ形式を使用します。 | デフォルトはありません。オプションです 
+|===
+
+NOTE: ポッドパラメータの書式設定の詳細については、を参照してください link:https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/["ポッドをノードに割り当てます"^]。
+
+
+
+== 構成例
+
+上記の属性は、を定義するときに使用できます `TridentOrchestrator` をクリックして、インストールをカスタマイズします。
+
+.例1：基本的なカスタム構成
+[%collapsible%open]
+====
+次に、基本的なカスタム構成の例を示します。
+
+[listing]
+----
+cat deploy/crds/tridentorchestrator_cr_imagepullsecrets.yaml
+apiVersion: trident.netapp.io/v1
+kind: TridentOrchestrator
+metadata:
+  name: trident
+spec:
+  debug: true
+  namespace: trident
+  imagePullSecrets:
+  - thisisasecret
+----
+====
+.例2：ノードセレクタを使用して導入します
+[%collapsible%open]
+====
+次の例では、ノードセレクタを使用してTridentを導入する方法を示します。
+
+[listing]
+----
+apiVersion: trident.netapp.io/v1
+kind: TridentOrchestrator
+metadata:
+  name: trident
+spec:
+  debug: true
+  namespace: trident
+  controllerPluginNodeSelector:
+    nodetype: master
+  nodePluginNodeSelector:
+    storage: netapp
+----
+====
+.例3：Windowsワーカーノードに導入する
+[%collapsible%open]
+====
+この例は、Windowsワーカーノードへの導入を示しています。
+
+[listing]
+----
+cat deploy/crds/tridentorchestrator_cr.yaml
+apiVersion: trident.netapp.io/v1
+kind: TridentOrchestrator
+metadata:
+  name: trident
+spec:
+  debug: true
+  namespace: trident
+  windows: true
+----
+====
