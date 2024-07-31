@@ -299,11 +299,11 @@ CHAP 認証（イニシエータが対象のボリュームユーザであるこ
 
 * アプリケーションのベストプラクティス情報 *
 
-* https://www.netapp.com/us/media/tr-4722.pdf["ONTAP での MySQL に関するベストプラクティスです"^]
+* https://docs.netapp.com/us-en/ontap-apps-dbs/mysql/mysql-overview.html["ONTAP での MySQL に関するベストプラクティスです"^]
 * https://www.netapp.com/pdf.html?item=/media/10510-tr-4605.pdf["SolidFire での MySQL に関するベストプラクティスです"^]
-* http://www.netapp.com/us/media/tr-4635.pdf["NetApp SolidFire および Cassandra"^]
-* http://www.netapp.com/us/media/tr-4606.pdf["SolidFire での Oracle のベストプラクティス"^]
-* http://www.netapp.com/us/media/tr-4610.pdf["SolidFire での PostgreSQL のベストプラクティスです"^]
+* https://www.netapp.com/pdf.html?item=/media/10513-tr-4635pdf.pdf["NetApp SolidFire および Cassandra"^]
+* https://www.netapp.com/pdf.html?item=/media/10511-tr4606pdf.pdf["SolidFire での Oracle のベストプラクティス"^]
+* https://www.netapp.com/pdf.html?item=/media/10512-tr-4610pdf.pdf["SolidFire での PostgreSQL のベストプラクティスです"^]
 
 
 すべてのアプリケーションに具体的なガイドラインがあるわけではありません。そのためには、ネットアップのチームと協力し、を使用することが重要です https://www.netapp.com/search/["NetApp ライブラリ"^] 最新のドキュメントを検索できます。
