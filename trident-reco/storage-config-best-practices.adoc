@@ -45,7 +45,7 @@ SVM の管理には、いくつかのオプションを使用できます。
 
 いずれの場合も、インターフェイスは DNS にあり、 Trident の設定時には DNS 名を使用する必要があります。これにより、ネットワーク ID を保持しなくても SVM-DR などの一部の DR シナリオが簡単になります。
 
-専用の管理 LIF または共有の管理 LIF を SVM に使用する方法は推奨されませんが、ネットワークセキュリティポリシーを選択した方法と一致させる必要があります。最大の柔軟性を確保するには、どのような場合でも DNS 経由で管理 LIF にアクセスできるようにします https://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-dap/GUID-B9E36563-1C7A-48F5-A9FF-1578B99AADA9.html["SVM-DR"^] Trident と組み合わせて使用できます。
+専用の管理 LIF または共有の管理 LIF を SVM に使用する方法は推奨されませんが、ネットワークセキュリティポリシーを選択した方法と一致させる必要があります。いずれにせよ、最大限の柔軟性を確保するためには、管理LIFにDNS経由でアクセスできるようにする必要があります。これをTridentと組み合わせて使用する必要があります https://docs.netapp.com/us-en/ontap/data-protection/snapmirror-svm-replication-concept.html["SVM-DR"^]。
 
 
 
@@ -88,7 +88,7 @@ Tridentで作成できるボリュームの最大サイズを設定するには�
 
 === SVM QoS ポリシーを作成して使用します
 
-SVM に適用された ONTAP QoS ポリシーを使用すると、 Trident でプロビジョニングされたボリュームが使用できる IOPS の数が制限されます。これはに役立ちます http://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-perf-mon/GUID-77DF9BAF-4ED7-43F6-AECE-95DFB0680D2F.html?cp=7_1_2_1_2["Bully を防止します"^] Trident SVM 外のワークロードに影響を及ぼす、制御不能なコンテナ。
+SVM に適用された ONTAP QoS ポリシーを使用すると、 Trident でプロビジョニングされたボリュームが使用できる IOPS の数が制限されます。これにより、コンテナがTrident SVMの外部のワークロードに影響を及ぼすのを防ぎ、制御不能にすることができます https://docs.netapp.com/us-en/ontap/performance-admin/guarantee-throughput-qos-task.html["Bully を防止します"^]。
 
 SVM の QoS ポリシーはいくつかの手順で作成します。正確な情報については、ご使用の ONTAP バージョンのマニュアルを参照してください。次の例は、 SVM で使用可能な合計 IOPS を 5000 に制限する QoS ポリシーを作成します。
 
@@ -118,7 +118,7 @@ IMPORTANT: ONTAP バージョン 9.8 より前の場合は、 QoS ポリシー�
 
 === Trident の QoS ポリシーグループを作成
 
-Quality of Service （ QoS ；サービス品質）は、競合するワークロードによって重要なワークロードのパフォーマンスが低下しないようにします。ONTAP の QoS ポリシーグループには、ボリュームに対する QoS オプションが用意されており、ユーザは 1 つ以上のワークロードに対するスループットの上限を定義できます。QoS の詳細については、を参照してください https://docs.netapp.com/ontap-9/topic/com.netapp.doc.pow-perf-mon/GUID-77DF9BAF-4ED7-43F6-AECE-95DFB0680D2F.html["QoS によるスループットの保証"^]。QoS ポリシーグループはバックエンドまたはストレージプールに指定でき、そのプールまたはバックエンドに作成された各ボリュームに適用されます。
+Quality of Service （ QoS ；サービス品質）は、競合するワークロードによって重要なワークロードのパフォーマンスが低下しないようにします。ONTAP の QoS ポリシーグループには、ボリュームに対する QoS オプションが用意されており、ユーザは 1 つ以上のワークロードに対するスループットの上限を定義できます。QoSの詳細については、を参照してください https://docs.netapp.com/us-en/ontap/performance-admin/guarantee-throughput-qos-task.html["QoS によるスループットの保証"^]。QoS ポリシーグループはバックエンドまたはストレージプールに指定でき、そのプールまたはバックエンドに作成された各ボリュームに適用されます。
 
 ONTAP には、従来型とアダプティブ型の 2 種類の QoS ポリシーグループがあります。従来のポリシーグループは、最大スループット（以降のバージョンでは最小スループット）がフラットに表示されます。アダプティブ QoS では、ワークロードのサイズの変更に合わせてスループットが自動的に調整され、 TB または GB あたりの IOPS が一定に維持されます。これにより、何百何千という数のワークロードを管理する大規模な環境では大きなメリットが得られます。
 
@@ -152,7 +152,7 @@ storage:
 * ボリュームごとにポリシーグループを適用して、各ボリュームがポリシーグループの指定に従ってスループット全体を取得するようにします。共有ポリシーグループはサポートされません。
 
 
-QoS ポリシーグループの詳細については、を参照してください https://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-cmpr-980/TOC__qos.html["ONTAP 9.8 QoS コマンド"^]。
+QoSポリシーグループの詳細については、を参照してください https://docs.netapp.com/us-en/ontap-cli-98/index.html["ONTAP 9.8 QoS コマンド"^]。
 
 
 
@@ -282,8 +282,8 @@ CHAP 認証（イニシエータが対象のボリュームユーザであるこ
 * ONTAP *
 
 * https://www.netapp.com/us/media/tr-4067.pdf["NFS Best Practice and Implementation Guide"^]
-* http://docs.netapp.com/ontap-9/topic/com.netapp.doc.dot-cm-sanag/home.html["SAN アドミニストレーションガイド"^] （ iSCSI の場合）
-* http://docs.netapp.com/ontap-9/topic/com.netapp.doc.exp-iscsi-rhel-cg/home.html["RHEL 向けの iSCSI のクイック構成"^]
+* https://docs.netapp.com/us-en/ontap/san-admin/index.html["SANストレージ管理"^]（iSCSIの場合）
+* https://docs.netapp.com/us-en/ontap/san-admin/provision-storage.html["RHEL 向けの iSCSI のクイック構成"^]
 
 
 * Element ソフトウェア *
