@@ -1,5 +1,10 @@
 ---
 indexpage:
+  title: Astra Trident 23.01ドキュメント
+  summary: Astra Tridentは、NetAppによって維持されているオープンソースのストレージプロビジョナーおよびオーケストレーターです。DockerおよびKubernetesで管理されるコンテナ化されたアプリケーション用のストレージボリュームを作成できます。**Astra
+    Trident 23.01へのアップグレードに関する重要な情報については、リリースノートをお読みください。**
+  keywords: astra trident, 2301, documentation, release notes, get started, deploy,
+    upgrade, use, data management, demos, tutorials, blogs, community
   lead: Astra Trident は、ネットアップが管理しているオープンソースのストレージプロビジョニングおよびオーケストレーションツールです。このコンテナを使用すると、
     Docker と Kubernetes で管理されるコンテナ化アプリケーション用のストレージボリュームを作成できます。
   tiles:

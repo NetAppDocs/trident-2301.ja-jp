@@ -51,8 +51,6 @@ sidebar:
     url: "/troubleshooting.html"
   - section: trident-reco
   - section: trident-reference
-  - title: 以前のバージョン
-    url: "/earlier-versions.html"
   - title: 法的通知
     url: "/legal-notices.html"
 product-family:
